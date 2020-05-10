@@ -8,12 +8,11 @@ class Problem(models.Model):
 
 class Catagory(models.Model):
     name = models.CharField(max_length=50)
-    problem = models.ForeignKey(Problem,on_delete=models.CASCADE)
     t_score_lower = models.FloatField(default=0)
     t_score_upper = models.FloatField(default=0)
 
     def __str__(self):
-        return str(self.problem)+ '_' + self.name
+        return self.name
 
 class Score(models.Model):
     problem = models.ForeignKey(Problem,on_delete=models.CASCADE)
