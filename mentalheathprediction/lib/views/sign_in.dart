@@ -135,7 +135,9 @@ class SignInView extends StatelessWidget {
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          },
                           child: Container(
                             height: 50,
                             width: 100,
@@ -177,7 +179,10 @@ class SignInView extends StatelessWidget {
                           SizedBox(
                             width: 5,
                           ),
-                          Text('Sign Up',style: TextStyle(color: Colors.orange),)
+                          Text(
+                            'Sign Up',
+                            style: TextStyle(color: Colors.orange),
+                          )
                         ],
                       ),
                     ))),
