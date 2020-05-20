@@ -30,15 +30,15 @@ app.get('', (req, res) => {
 })
 
 app.get('/signin', (req, res) => {
-    res.render('signin')
+    res.render('signin', { title: 'Sign In' })
 })
 
 app.get('/home', (req, res) => {
-    res.render('home', { title: 'home' })
+    res.render('home', { title: 'Home' })
 })
 
 app.get('/signup', (req, res) => {
-    res.render('signup')
+    res.render('signup', { title: 'Sign Up' })
 })
 
 app.post('/signup', async(req, res) => {
@@ -60,7 +60,6 @@ app.post('/signin', async(req, res) => {
     } else {
         res.redirect('/signin')
     }
-
 })
 
 app.listen(3000, () => {
