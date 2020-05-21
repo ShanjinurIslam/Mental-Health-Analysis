@@ -1,6 +1,67 @@
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand">{{title}}</a>
-  <form class="form-inline">
-    <a class="btn btn-primary my-2 my-sm-0 text-white" href="/signin">Sign In</a>
-  </form>
+<nav class="uk-navbar-container" uk-navbar>
+  {{#if loggedIn}}
+  <div class="uk-navbar-left">
+    <a class="uk-navbar-toggle" uk-toggle="target: #offcanvas-overlay">
+      <span uk-navbar-toggle-icon></span>
+    </a>
+  </div>
+  <div class="uk-navbar-right">
+    <ul class="uk-navbar-nav">
+      <li class="uk-parent">
+        <form action="/logout" method="POST"><button class="uk-button uk-button-text uk-margin-right"
+            type="submit">Logout</a></form>
+      </li>
+    </ul>
+  </div>
+  {{else}}
+  <div class="uk-navbar-left">
+    <a class="uk-navbar-item uk-logo" href="/">Mental Health Analysis</a>
+  </div>
+  <div class="uk-navbar-right">
+    <ul class="uk-navbar-nav">
+      <li class="uk-parent"><button class="uk-button uk-button-text uk-margin-right"
+          uk-toggle="target: #modal-close-default">Login</a></li>
+    </ul>
+  </div>
+  {{/if}}
 </nav>
+
+<div id="modal-close-default" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-body">
+      <form action="/signin" method="POST">
+        <fieldset class="uk-fieldset">
+
+          <legend class="uk-legend">Sign In</legend>
+
+          <div class="uk-margin">
+            <input name="email" class="uk-input" type="email" placeholder="Email" required>
+          </div>
+
+          <div class="uk-margin">
+            <input name="password" class="uk-input" type="password" placeholder="Password" required>
+          </div>
+
+          <button class="uk-button uk-button-primary" type="submit">Sign In</button>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="offcanvas-overlay" uk-offcanvas="mode: push">
+  <div class="uk-offcanvas-bar">
+
+    <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+
+    <h3>Title</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat.</p>
+
+  </div>
+</div>
