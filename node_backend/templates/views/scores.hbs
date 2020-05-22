@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{> header}}
+
+    <body>
+        {{>navbar}}
+        <div class="uk-container">
+            <h2 class="uk-margin-top">{{title}}</h2>
+            <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
+                {{#each scores}}
+                <div class="uk-margin">
+                    <div class="uk-margin">
+                        <h4>{{capitalize this.problem.name}}</h4>
+                    </div>
+                    <div class="uk-overflow-auto uk-height-medium">
+                        <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1 ">
+                            <thead>
+                                <tr>
+                                    <th>Raw Score</th>
+                                    <th>T Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each this.scores}}
+                                <tr>
+                                    <td>{{this.rawScore}}</td>
+                                    <td>{{this.tScore}}</td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{/each}}
+                <div>
+                    <form action="/{{toLowerCase title}}" method="POST" enctype="multipart/form-data">
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">Submit Score</legend>
+                            <div class="uk-margin">
+                                <select name="problem_id" class="uk-select uk-form-width-large">
+                                    <option value="" disabled selected>Select Problem</option>
+                                    {{#each problems}}
+                                    <option value="{{this._id}}">{{capitalize this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="uk-margin" uk-margin>
+                                <div uk-form-custom="target: true">
+                                    <input name="file" type="file">
+                                    <input class="uk-input uk-form-width-large" type="text" placeholder="Select file"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="uk-button uk-button-primary">Submit</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div </div>
+
+
+    </body>
+
+</html>

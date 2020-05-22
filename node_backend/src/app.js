@@ -18,6 +18,8 @@ require('./db/mongoose')
 const User = require('./models/user')
 const Problem = require('./models/problem')
 const Question = require('./models/question')
+const Scores = require('./models/score')
+const Responses = require('./models/response')
 
 //session handle
 var session = require('express-session')
@@ -170,8 +172,71 @@ app.post('/questions', [auth, upload.single('file')], async(req, res) => {
             }
         });
     res.redirect('/questions')
-
 })
+
+app.get('/scores', auth, async(req, res) => {
+    const problems = await Problem.find({})
+    var scores = await Scores.find({})
+
+    const filled = []
+
+    scores.forEach(element => {
+        filled.push(element.problem.toString())
+    });
+
+    for (var i in scores) {
+        scores[i].problem = await Problem.findById(scores[i].problem)
+    }
+
+    const filtered = problems.filter((problem) => !filled.includes(problem._id.toString()))
+
+    res.render('scores', { title: 'Scores', loggedIn: true, problems: filtered, scores })
+})
+
+app.post('/scores', [auth, upload.single('file')], async(req, res) => {
+    const problem_id = req.body.problem_id
+    const problem = await Problem.findById(problem_id)
+    const csv_path = req.file.path;
+    const arr = []
+    fs.createReadStream(csv_path)
+        .pipe(csv.parse({ headers: true }))
+        .on('error', error => console.error(error))
+        .on('data', row => {
+            arr.push(row)
+        })
+        .on('end', async() => {
+            const object = {
+                scores: arr,
+                problem: problem
+            }
+
+            try {
+                const score = new Scores(object)
+                console.log(score)
+                await score.save()
+            } catch (e) {
+                console.log(e)
+            }
+        });
+    res.redirect('/scores')
+})
+
+app.get('/users', auth, async(req, res) => {
+    const users = await User.find({})
+
+    for (i in users) {
+        users[i] = users[i].toJson()
+    }
+
+    res.render('users', { title: 'Users', loggedIn: true, users })
+})
+
+app.get('/responses', auth, async(req, res) => {
+    const responses = await Responses.find({})
+
+    res.render('responses', { title: 'Responses', loggedIn: true, responses })
+})
+
 
 // api section
 

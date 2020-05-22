@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{>header}}
+
+    <body>
+        {{>navbar}}
+        <div class="uk-container">
+            <h2 class="uk-margin-top">{{title}}</h2>
+
+            <table class="uk-table uk-table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each users}}
+                    <tr>
+                        <td><b>{{this.username}}</b></td>
+                        <td>{{this.email}}</td>
+                        <td>{{this.age}}</td>
+                        <td>{{this.gender}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </body>
+
+</html>
