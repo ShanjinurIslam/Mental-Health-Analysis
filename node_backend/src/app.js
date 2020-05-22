@@ -12,6 +12,7 @@ require('./db/mongoose')
 
 // models
 const User = require('./models/user')
+const Problem = require('./models/problem')
 
 //session handle
 var session = require('express-session')
@@ -44,6 +45,13 @@ app.use(express.static(publicPath))
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
+hbs.registerHelper('capitalize', function(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+});
+
+hbs.registerHelper('toLowerCase', function(str) {
+    return str.toLowerCase()
+});
 
 app.get('', (req, res) => {
     if (req.session.user_id) {
@@ -80,16 +88,42 @@ app.post('/logout', auth, (req, res) => {
 
 app.post('/signin', async(req, res) => {
     const user = await User.findOne({ email: req.body.email })
-    if (user.password == req.body.password) {
+    const isMatch = await bcrypt.compare(req.body.password, user.password)
+    if (isMatch) {
         req.session.user_id = user._id
         res.redirect('/home')
     } else {
-        res.redirect('/signin')
+        res.redirect('/')
     }
 })
 
 app.listen(3000, () => {
     console.log('Server is up on port 3000')
+})
+
+app.post('/problems', auth, async(req, res) => {
+    try {
+        const problem = new Problem(req.body)
+        await problem.save()
+        res.redirect('/Problems')
+    } catch (e) {
+        req.e = e
+        res.redirect('/Problems')
+    }
+})
+
+app.get('/problems', auth, async(req, res) => {
+    const problems = await Problem.find({})
+    res.render('problem', { title: 'Problems', loggedIn: true, problems })
+})
+
+app.get('/questions', auth, async(req, res) => {
+    const problems = await Problem.find({})
+    res.render('question', { title: 'Questions', loggedIn: true, problems })
+})
+
+app.post('/processquestion', [auth], (req, res) => {
+
 })
 
 // api section
@@ -106,22 +140,9 @@ app.post('/user', async(req, res) => {
     }
 })
 
-app.get('/user/me', api_auth, async(req, res) => {
-    try {
-        const user = await User.findById(req.user_id)
-        if (!user) {
-            return res.status(400).send()
-        }
-        const isAuth = user.checkAuth(req.token)
-        if (isAuth) {
-            var object = user.toJson()
-            return res.status(201).send({ user: object })
-        } else {
-            res.status(401).send()
-        }
-    } catch (e) {
-        res.status(502).send(e)
-    }
+app.get('/user/me', api_auth, (req, res) => {
+    var object = req.user.toJson()
+    return res.status(201).send({ user: object })
 })
 
 app.post('/user/login', async(req, res) => {
@@ -145,33 +166,23 @@ app.post('/user/login', async(req, res) => {
 
 app.post('/user/logout', api_auth, async(req, res) => {
     try {
-        const user = await User.findById(req.user_id)
-        const isAuth = user.checkAuth(req.token)
-        if (isAuth) {
-            const tokens = user.tokens.filter((tokens) => tokens.token != req.token)
-            user.tokens = tokens
-            await user.save()
-            res.status(200).send()
-        } else {
-            res.status(401).send()
-        }
+        const user = req.user
+        const tokens = user.tokens.filter((tokens) => tokens.token != req.token)
+        user.tokens = tokens
+        await user.save()
+        res.status(200).send()
     } catch (e) {
-        res.status(502).send(e)
+        res.status(400).send(e)
     }
 })
 
 app.post('/user/logoutAll', api_auth, async(req, res) => {
     try {
-        const user = await User.findById(req.user_id)
-        const isAuth = user.checkAuth(req.token)
-        if (isAuth) {
-            user.tokens = []
-            await user.save()
-            res.status(200).send()
-        } else {
-            res.status(401).send()
-        }
+        const user = req.user
+        user.tokens = []
+        await user.save()
+        res.status(200).send()
     } catch (e) {
-        res.status(502).send(e)
+        res.status(400).send(e)
     }
 })

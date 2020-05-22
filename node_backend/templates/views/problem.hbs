@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{>header}}
+
+    <body>
+        {{> navbar}}
+        <div class="uk-container">
+            <h2 class="uk-margin-top">{{title}}</h2>
+
+            <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
+                <div>
+                    <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1">
+                        <caption>Current Problems</caption>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Has Question?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each problems}}
+                            <tr>
+                                <td>{{capitalize this.name}}</td>
+                                <td>No</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 class="uk-margin-top">Add New Problem</h3>
+                    <form class="uk-grid-small" uk-grid method="POST" action="/Problems">
+                        <div class="uk-width-1-3@s">
+                            <input name="name" class="uk-input" type="text" placeholder="Enter New Problem">
+                        </div>
+                        <div>
+                            <button class="uk-button uk-button-primary" type="submit">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

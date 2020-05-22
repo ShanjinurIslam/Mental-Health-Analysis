@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{> header}}
+
+    <body>
+        {{> navbar}}
+        <div class="uk-container">
+            <h2 class="uk-margin-top">{{title}}</h2>
+
+            <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
+                <div>
+                    <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1">
+                        <caption>Current Problems</caption>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Problem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each problems}}
+                            <tr>
+                                <td>{{this._id}}</td>
+                                <td>{{capitalize this.name}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <form>
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">Submit Questions</legend>
+                            <div class="uk-margin">
+                                <select class="uk-select uk-form-width-large">
+                                    <option value="" disabled selected>Select Problem</option>
+                                    {{#each problems}}
+                                    <option value="{{this._id}}">{{capitalize this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="uk-margin" uk-margin>
+                                <div uk-form-custom="target: true">
+                                    <input type="file">
+                                    <input class="uk-input uk-form-width-large" type="text" placeholder="Select file"
+                                        disabled>
+                                </div>
+                                <button class="uk-button uk-button-primary">Submit</button>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </body>
+
+</html>
