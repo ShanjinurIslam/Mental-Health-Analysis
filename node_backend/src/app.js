@@ -3,6 +3,9 @@ const express = require('express')
 const hbs = require('hbs')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcryptjs')
+const multer = require('multer');
+const csv = require('fast-csv');
+
 const api_auth = require('./middleware/api_auth')
 
 const auth = require('./middleware/auth')
@@ -48,10 +51,13 @@ hbs.registerPartials(partialsPath)
 hbs.registerHelper('capitalize', function(str) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 });
-
 hbs.registerHelper('toLowerCase', function(str) {
     return str.toLowerCase()
 });
+
+// set up upload section
+const upload = multer({ dest: 'csv' });
+
 
 app.get('', (req, res) => {
     if (req.session.user_id) {
@@ -122,8 +128,9 @@ app.get('/questions', auth, async(req, res) => {
     res.render('question', { title: 'Questions', loggedIn: true, problems })
 })
 
-app.post('/processquestion', [auth], (req, res) => {
-
+app.post('/processquestion', [auth, upload.single('file')], (req, res) => {
+    console.log(req.body)
+    res.redirect('/questions')
 })
 
 // api section

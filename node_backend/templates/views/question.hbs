@@ -28,11 +28,11 @@
                     </table>
                 </div>
                 <div>
-                    <form>
+                    <form action="/processquestion" method="POST" enctype="multipart/form-data">
                         <fieldset class="uk-fieldset">
                             <legend class="uk-legend">Submit Questions</legend>
                             <div class="uk-margin">
-                                <select class="uk-select uk-form-width-large">
+                                <select name="problem_id" class="uk-select uk-form-width-large">
                                     <option value="" disabled selected>Select Problem</option>
                                     {{#each problems}}
                                     <option value="{{this._id}}">{{capitalize this.name}}</option>
@@ -41,13 +41,12 @@
                             </div>
                             <div class="uk-margin" uk-margin>
                                 <div uk-form-custom="target: true">
-                                    <input type="file">
+                                    <input name="file" type="file">
                                     <input class="uk-input uk-form-width-large" type="text" placeholder="Select file"
                                         disabled>
                                 </div>
                                 <button class="uk-button uk-button-primary">Submit</button>
                             </div>
-
                         </fieldset>
                     </form>
                 </div>
