@@ -2,14 +2,19 @@ const mongoose = require('mongoose')
 
 const questionSchema = new mongoose.Schema({
     questions: [{
-        question: {
+        engQuestion: {
+            type: String,
+            required: true
+        },
+        bngQuestion: {
             type: String,
             required: true
         }
     }],
     problem: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Problem'
+        ref: 'Problem',
+        unique: true,
     }
 })
 

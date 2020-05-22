@@ -9,26 +9,28 @@
 
             <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
                 <div>
+                    {{#each questions}}
                     <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1">
-                        <caption>Current Problems</caption>
+                        <legend>{{capitalize this.problem.name}}</legend>
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Problem</th>
+                                <th>English</th>
+                                <th>Bangla</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{#each problems}}
+                            {{#each this.questions}}
                             <tr>
-                                <td>{{this._id}}</td>
-                                <td>{{capitalize this.name}}</td>
+                                <td>{{this.engQuestion}}</td>
+                                <td>{{this.bngQuestion}}</td>
                             </tr>
                             {{/each}}
                         </tbody>
                     </table>
+                    {{/each}}
                 </div>
                 <div>
-                    <form action="/processquestion" method="POST" enctype="multipart/form-data">
+                    <form action="/{{toLowerCase title}}" method="POST" enctype="multipart/form-data">
                         <fieldset class="uk-fieldset">
                             <legend class="uk-legend">Submit Questions</legend>
                             <div class="uk-margin">

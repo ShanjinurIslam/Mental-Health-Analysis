@@ -9,23 +9,14 @@
 
             <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
                 <div>
-                    <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1">
-                        <caption>Current Problems</caption>
-                        <thead>
-                            <tr>
-                                <th>Problem</th>
-                                <th>Has Question?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each problems}}
-                            <tr>
-                                <td>{{capitalize this.name}}</td>
-                                <td>No</td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+                    <legend>Current Problems</legend>
+                    <ul class="uk-list uk-list-bullet">
+                        {{#each problems}}
+                        <li>
+                            <td>{{capitalize this.name}}</td>
+                        </li>
+                        {{/each}}
+                    </ul>
                 </div>
                 <div>
                     <h3 class="uk-margin-top">Add New Problem</h3>
