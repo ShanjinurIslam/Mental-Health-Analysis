@@ -6,10 +6,14 @@ const bcrypt = require('bcryptjs')
 const multer = require('multer');
 const csv = require('fast-csv');
 const fs = require('fs');
+const http = require('http')
 
 const api_auth = require('./middleware/api_auth')
 
 const auth = require('./middleware/auth')
+
+
+
 
 // run db
 require('./db/mongoose')
@@ -107,9 +111,19 @@ app.post('/signin', async(req, res) => {
     }
 })
 
+/*
 app.listen(3000, () => {
     console.log('Server is up on port 3000')
+})*/
+
+//create server
+const server = http.createServer(app)
+server.listen(3000, '127.0.0.1', function() {
+    server.close(function() {
+        server.listen(8080, '192.168.0.107')
+    })
 })
+
 
 app.post('/problems', auth, async(req, res) => {
     try {
@@ -237,8 +251,22 @@ app.get('/responses', auth, async(req, res) => {
     res.render('responses', { title: 'Responses', loggedIn: true, responses })
 })
 
+app.get('/profile', auth, async(req, res) => {
+    var user = await User.findById(req.session.user_id)
+    user = user.toJson()
+    res.render('profile', { title: 'Profile', loggedIn: true, user })
+})
+
 
 // api section
+
+///
+
+///
+
+///
+
+///
 
 app.post('/api/user', async(req, res) => {
     try {
@@ -255,6 +283,70 @@ app.post('/api/user', async(req, res) => {
 app.get('/api/user/me', api_auth, (req, res) => {
     var object = req.user.toJson()
     return res.status(201).send({ user: object })
+})
+
+app.get('/api/problems', api_auth, async(req, res) => {
+    const problems = await Problem.find({})
+    return res.status(201).send({ problems })
+})
+
+app.get('/api/questions/:id', api_auth, async(req, res) => {
+    const question = await Question.find({ problem: req.params.id })
+    console.log(question)
+    res.status(200).send(question)
+})
+
+app.post('/api/response/:id', api_auth, async(req, res) => {
+    try {
+        var object = new Object()
+
+        const score = await Scores.findOne({ problem: req.params.id })
+        const match = score.scores.filter((score) => score.rawScore == req.body.rawScore)
+
+        object.tScore = match[0].tScore
+        var catagory;
+
+        if (object.tScore < 55) {
+            catagory = 'None'
+        } else if (object.tScore >= 55.0 && object.tScore <= 59.9) {
+            catagory = 'Mild'
+        } else if (object.tScore >= 60.0 && object.tScore <= 69.9) {
+            catagory = 'Moderate'
+        } else {
+            catagory = 'Severe'
+        }
+
+        object.user = req.user._id
+        object.catagory = catagory
+        object.problem = req.params.id
+        const response = new Responses(object)
+        await response.save()
+        res.status(200).send(response)
+    } catch (e) {
+        console.log(e)
+        res.status(502).send(e)
+    }
+})
+
+app.get('/api/response', api_auth, async(req, res) => {
+    try {
+        const responses = await Responses.find({ user: req.user._id })
+
+        for (i in responses) {
+            responses[i].problem = await Problem.findById(responses[i].problem)
+        }
+
+        for (i in responses) {
+            delete responses[i].user
+        }
+
+
+        res.status(200).send(responses)
+    } catch (e) {
+        console.log(e)
+        res.status(502).send(e)
+    }
+
 })
 
 app.post('/api/user/login', async(req, res) => {
