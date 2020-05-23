@@ -6,6 +6,26 @@
         {{>navbar}}
         <div class="uk-container">
             <h2 class="uk-margin-top">{{title}}</h2>
+            <table class="uk-table uk-table-striped">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Problem</th>
+                        <th>Catagory</th>
+                        <th>Submitted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each responses}}
+                    <tr>
+                        <td><b>{{this.user.username}}</b></td>
+                        <td>{{capitalize this.problem.name}}</td>
+                        <td>{{this.catagory}}</td>
+                        <td>{{this.submittedAt}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
     </body>
 

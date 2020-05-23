@@ -7,12 +7,11 @@
         <div class="uk-container">
             <h2 class="uk-margin-top">{{title}}</h2>
             <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
-                {{#each scores}}
-                <div class="uk-margin">
-                    <div class="uk-margin">
+                <div>
+                    {{#each scores}}
+
+                    <div class="uk-overflow-auto uk-height-medium uk-margin">
                         <h4>{{capitalize this.problem.name}}</h4>
-                    </div>
-                    <div class="uk-overflow-auto uk-height-medium">
                         <table class="uk-table uk-table-divider uk-margin-top uk-width-1-1 ">
                             <thead>
                                 <tr>
@@ -30,14 +29,15 @@
                             </tbody>
                         </table>
                     </div>
+                    <br/>
+                    {{/each}}
                 </div>
-                {{/each}}
                 <div>
                     <form action="/{{toLowerCase title}}" method="POST" enctype="multipart/form-data">
                         <fieldset class="uk-fieldset">
                             <legend class="uk-legend">Submit Score</legend>
                             <div class="uk-margin">
-                                <select name="problem_id" class="uk-select uk-form-width-large">
+                                <select name="problem_id" class="uk-select uk-form-width-large" required>
                                     <option value="" disabled selected>Select Problem</option>
                                     {{#each problems}}
                                     <option value="{{this._id}}">{{capitalize this.name}}</option>
@@ -46,7 +46,7 @@
                             </div>
                             <div class="uk-margin" uk-margin>
                                 <div uk-form-custom="target: true">
-                                    <input name="file" type="file">
+                                    <input name="file" type="file" required>
                                     <input class="uk-input uk-form-width-large" type="text" placeholder="Select file"
                                         disabled>
                                 </div>

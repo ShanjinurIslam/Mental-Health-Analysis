@@ -120,7 +120,7 @@ app.listen(3000, () => {
 const server = http.createServer(app)
 server.listen(3000, '127.0.0.1', function() {
     server.close(function() {
-        server.listen(8080, '192.168.0.107')
+        server.listen(8080, '192.168.0.102')
     })
 })
 
@@ -189,7 +189,14 @@ app.post('/questions', [auth, upload.single('file')], async(req, res) => {
 })
 
 app.get('/scores', auth, async(req, res) => {
-    const problems = await Problem.find({})
+    const questions = await Question.find({})
+
+    const submittedProblems = []
+
+    for (i in questions) {
+        submittedProblems.push(questions[i].problem)
+    }
+
     var scores = await Scores.find({})
 
     const filled = []
@@ -202,7 +209,7 @@ app.get('/scores', auth, async(req, res) => {
         scores[i].problem = await Problem.findById(scores[i].problem)
     }
 
-    const filtered = problems.filter((problem) => !filled.includes(problem._id.toString()))
+    const filtered = submittedProblems.filter((problem) => !filled.includes(problem._id.toString()))
 
     res.render('scores', { title: 'Scores', loggedIn: true, problems: filtered, scores })
 })
@@ -247,6 +254,12 @@ app.get('/users', auth, async(req, res) => {
 
 app.get('/responses', auth, async(req, res) => {
     const responses = await Responses.find({})
+
+    for (i in responses) {
+        responses[i].problem = await Problem.findById(responses[i].problem)
+        responses[i].user = await User.findById(responses[i].user)
+        responses[i].user = responses[i].user.toJson()
+    }
 
     res.render('responses', { title: 'Responses', loggedIn: true, responses })
 })
