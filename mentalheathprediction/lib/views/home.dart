@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mentalheathprediction/scopedModel/model.dart';
 import 'package:mentalheathprediction/views/problems.dart';
 import 'package:mentalheathprediction/views/profile.dart';
 import 'package:mentalheathprediction/views/reports.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -21,9 +23,10 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    //print(ScopedModel.of<MyModel>(context).user.id) ;
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.green,
+            selectedItemColor: Colors.orange,
             currentIndex: _currentIndex,
             onTap: onTapped,
             items: [

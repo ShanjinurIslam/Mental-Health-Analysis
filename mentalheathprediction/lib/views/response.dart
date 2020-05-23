@@ -1,39 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mentalheathprediction/models/user.dart';
-import 'package:mentalheathprediction/scopedModel/model.dart';
-import 'package:mentalheathprediction/static.dart';
-import 'package:mentalheathprediction/views/sign_in.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:http/http.dart' as http;
+import 'package:mentalheathprediction/models/response.dart';
 import '../utills.dart';
 
-class Profile extends StatelessWidget {
-  void logOut(BuildContext context) async {
-    final http.Response response = await http.post(
-      LOGOUT_URL,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ' + ScopedModel.of<MyModel>(context).user.token
-      },
-    );
-    if (response.statusCode == 200) {
-      Navigator.of(context).pushReplacement(new PageRouteBuilder(
-          pageBuilder: (BuildContext context, _, __) {
-        return new SignInView();
-      }, transitionsBuilder:
-              (_, Animation<double> animation, __, Widget child) {
-        return new FadeTransition(opacity: animation, child: child);
-      }));
-    } else {
-      //do nothing
-    }
-  }
-
+class ResponseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    User user = ScopedModel.of<MyModel>(context).user;
-    return SafeArea(
+    final Response response = ModalRoute.of(context).settings.arguments;
+    print(response.submittedAt);
+    return Scaffold(
+        body: SafeArea(
       bottom: false,
       child: Column(
         children: <Widget>[
@@ -44,7 +20,7 @@ class Profile extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      'Profile',
+                      'Report',
                       style: TextStyle(fontSize: 32),
                     )
                   ],
@@ -71,23 +47,29 @@ class Profile extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                CupertinoIcons.person,
-                                size: 120,
-                              ),
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Text(
+                            capitalizeString(response.problem),
+                            style: TextStyle(fontSize: 26),
                           ),
                           Spacer(),
                           Text(
-                            capitalizeString(user.username.toString()),
-                            style: TextStyle(fontSize: 24),
+                            'Catagory',
+                            style: TextStyle(fontSize: 16),
                           ),
-                          Text(user.email),
-                          Text(user.gender),
-                          Text(user.age.toString()),
+                          Text(
+                            response.catagory,
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.orange),
+                          ),
+                          Spacer(),
+                          Text(
+                            'Submitted At',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(
+                            response.submittedAt,
+                            style: TextStyle(color: Colors.grey),
+                          ),
                         ],
                       ),
                     ),
@@ -102,13 +84,13 @@ class Profile extends StatelessWidget {
                     ),
                     elevation: 0,
                     onPressed: () {
-                      logOut(context);
+                      Navigator.pop(context);
                     },
                     child: Container(
                       height: 48,
                       child: Center(
                         child: Text(
-                          'Log Out',
+                          'Back to Home',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
@@ -121,6 +103,6 @@ class Profile extends StatelessWidget {
           )
         ],
       ),
-    );
+    ));
   }
 }
